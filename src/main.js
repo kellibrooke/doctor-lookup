@@ -2,19 +2,29 @@ import $ from 'jquery';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.css';
-import { DoctorService} from './doctor-service.js';
+import { DoctorService } from './doctor-service.js';
 
 $(document).ready(function() {
+  let doctorService = new DoctorService();
+  let promiseSpecialtyList = doctorService.getAllSpecialties();
+  
+  promiseSpecialtyList.then(function(response) {
+    let body = JSON.parse(response);
+
+    for (var i = 0; i < body.data.length; i++) {
+      $('#specialties').append(`<option value="${body.data[i].name}">${body.data[i].name}</option>`);
+    }
+  }, function(error) {
+    $('#errors').text(`There was an error processing your request: ${error.message}`);
+  });
 
   $('#findDrButton').click(function() {
     let city = ($('#city').val()).toLowerCase();
     let state = $('#state').val();
     let location = `${state}-${city}`;
+    let promiseDoctorList = doctorService.getAllDoctors(location);
 
-    let doctorService = new DoctorService();
-    let promiseSpecialties = doctorService.getAllDoctors(location);
-
-    promiseSpecialties.then(function(response) {
+    promiseDoctorList.then(function(response) {
       let body = JSON.parse(response);
       for (var i = 0; i < body.data.length; i++) {
         console.log(body);
