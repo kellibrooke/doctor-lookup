@@ -1,8 +1,8 @@
 export class DoctorService {
-  getDoctorByName(name) {
+  getAllSpecialties() {
     return new Promise(function(resolve, reject) {
       let request = new XMLHttpRequest();
-      let url = ``;
+      let url = `https://api.betterdoctor.com/2016-03-01/specialties?user_key=675f1f04996b5536cc88fdba50d5c75d`;
       request.onload = function() {
         if (this.status === 200) {
           resolve(request.response);
