@@ -10,24 +10,20 @@ $(document).ready(function() {
     let city = ($('#city').val()).toLowerCase();
     let state = $('#state').val();
     let location = `${state}-${city}`;
-    // console.log(state);
-    // console.log(location);
-    // $('#drName').val("");
-    //
-    // let doctorService = new DoctorService();
-    // let promiseSpecialties = doctorService.getAllSpecialties();
-    //
-    // promiseSpecialties.then(function(response) {
-    //
-    //   for(var i = 0; i < 10; i++) {
-    //     let body = JSON.parse(response);
-    //     $('#specialtyOptions').append(`<option value="${body.data[i].name}">${body.data[i].name}</option>`);
-    //   }
-    //
-    // }, function(error) {
-    //   $('#errors').text(`There was an error processing your request: ${error.message}`);
-    // });
-    $("#showDrInfo").text(state);
+
+    let doctorService = new DoctorService();
+    let promiseSpecialties = doctorService.getAllDoctors(location);
+
+    promiseSpecialties.then(function(response) {
+      let body = JSON.parse(response);
+      for (var i = 0; i < body.data.length; i++) {
+        console.log(body);
+        console.log("bodydata" + body.data[0].profile.first_name);
+        $('#showDrInfo').append(`<p>${body.data[i].profile.first_name} ${body.data[i].profile.last_name}</p>`);
+      }
+    }, function(error) {
+      $('#errors').text(`There was an error processing your request: ${error.message}`);
+    });
   });
 
 });
