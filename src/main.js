@@ -7,18 +7,29 @@ import { DoctorService } from './doctor-service.js';
 $(document).ready(function() {
   let doctorService = new DoctorService();
   let promiseSpecialtyList = doctorService.getAllSpecialties();
-  
+  let promiseInsuranceList = doctorService.getAllInsurances();
+
   promiseSpecialtyList.then(function(response) {
     let body = JSON.parse(response);
-
     for (var i = 0; i < body.data.length; i++) {
-      $('#specialties').append(`<option value="${body.data[i].name}">${body.data[i].name}</option>`);
+      $('#specialtyOptions').append(`<option value="${body.data[i].name}">${body.data[i].name}</option>`);
     }
   }, function(error) {
     $('#errors').text(`There was an error processing your request: ${error.message}`);
   });
 
-  $('#findDrButton').click(function() {
+  promiseInsuranceList.then(function(response) {
+    let body = JSON.parse(response);
+    for (var i = 0; i < body.data.length; i++) {
+      $('#insuranceOptions').append(`<option value="${body.data[i].name}">${body.data[i].name}</option>`);
+    }
+  }, function(error) {
+    $('#errors').text(`There was an error processing your request: ${error.message}`);
+  });
+
+
+
+  $('#findDrBySpecialty').click(function() {
     let city = ($('#city').val()).toLowerCase();
     let state = $('#state').val();
     let location = `${state}-${city}`;
