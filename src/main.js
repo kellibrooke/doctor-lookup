@@ -6,41 +6,49 @@ import { DoctorService } from './doctor-service.js';
 
 $(document).ready(function() {
   let doctorService = new DoctorService();
-  let promiseSpecialtyList = doctorService.getAllSpecialties();
-  let promiseInsuranceList = doctorService.getAllInsurances();
-
-  promiseSpecialtyList.then(function(response) {
-    let body = JSON.parse(response);
-    for (var i = 0; i < body.data.length; i++) {
-      $('#specialtyOptions').append(`<option value="${body.data[i].name}">${body.data[i].name}</option>`);
-    }
-  }, function(error) {
-    $('#errors').text(`There was an error processing your request: ${error.message}`);
-  });
-
-  promiseInsuranceList.then(function(response) {
-    let body = JSON.parse(response);
-    for (var i = 0; i < body.data.length; i++) {
-      $('#insuranceOptions').append(`<option value="${body.data[i].name}">${body.data[i].name}</option>`);
-    }
-  }, function(error) {
-    $('#errors').text(`There was an error processing your request: ${error.message}`);
-  });
+  // let promiseSpecialtyList = doctorService.getAllSpecialties();
+  // let promiseInsuranceList = doctorService.getAllInsurances();
+  //
+  // promiseSpecialtyList.then(function(response) {
+  //   let body = JSON.parse(response);
+  //   for (var i = 0; i < body.data.length; i++) {
+  //     $('#specialtyOptions').append(`<option value="&specialty_uid=${body.data[i].name}">${body.data[i].name}</option>`);
+  //   }
+  // }, function(error) {
+  //   $('#errors').text(`There was an error processing your request: ${error.message}`);
+  // });
+  //
+  // promiseInsuranceList.then(function(response) {
+  //   let body = JSON.parse(response);
+  //   for (var i = 0; i < body.data.length; i++) {
+  //     $('#insuranceOptions').append(`<option value="&insurance_uid=${body.data[i].name}">${body.data[i].name}</option>`);
+  //   }
+  // }, function(error) {
+  //   $('#errors').text(`There was an error processing your request: ${error.message}`);
+  // });
 
 
 
   $('#findDrBySpecialty').click(function() {
     let city = ($('#city').val()).toLowerCase();
     let state = $('#state').val();
-    let location = `${state}-${city}`;
-    let promiseDoctorList = doctorService.getAllDoctors(location);
+    let location = `location=${state}-${city}`;
+    let insurance = $('#insurances').val();
+    let specialty = $('#specialties').val();
+    let gender = $('#gender').val();
+    let promiseDoctorList = doctorService.getAllDoctors(location, insurance, specialty);
 
     promiseDoctorList.then(function(response) {
       let body = JSON.parse(response);
+
       for (var i = 0; i < body.data.length; i++) {
-        console.log(body);
-        console.log("bodydata" + body.data[0].profile.first_name);
-        $('#showDrInfo').append(`<p>${body.data[i].profile.first_name} ${body.data[i].profile.last_name}</p>`);
+        let acceptsPatients = "";
+        if (body.data[i].practices.accepts_new_patients == true) {
+          acceptsPatients = "yes";
+        } else {
+          acceptsPatients = "no";
+        }
+        $('#showDrInfo').append(`<h3>${body.data[i].profile.first_name} ${body.data[i].profile.last_name}</h3><p>Office Address:<br>${body.data[i].practices.visit_address.street}<br>${body.data[i].practices.visit_address.street2}<br> ${body.data[i].practices.visit_address.city},  ${body.data[i].practices.visit_address.state}  ${body.data[i].practices.visit_address.zip}</p><p>Office Phone Number: ${body.data[i].practices.phones.number}</p><p><a href='${body.data[i].practices.website}'>Office Website</a></p><p>Accepting New Patients: ${acceptsPatients}</p>`);
       }
     }, function(error) {
       $('#errors').text(`There was an error processing your request: ${error.message}`);
