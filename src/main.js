@@ -6,26 +6,26 @@ import { DoctorService } from './doctor-service.js';
 
 $(document).ready(function() {
   let doctorService = new DoctorService();
-  // let promiseSpecialtyList = doctorService.getAllSpecialties();
-  // let promiseInsuranceList = doctorService.getAllInsurances();
-  //
-  // promiseSpecialtyList.then(function(response) {
-  //   let body = JSON.parse(response);
-  //   for (var i = 0; i < body.data.length; i++) {
-  //     $('#specialtyOptions').append(`<option value="&specialty_uid=${body.data[i].name}">${body.data[i].name}</option>`);
-  //   }
-  // }, function(error) {
-  //   $('#errors').text(`There was an error processing your request: ${error.message}`);
-  // });
-  //
-  // promiseInsuranceList.then(function(response) {
-  //   let body = JSON.parse(response);
-  //   for (var i = 0; i < body.data.length; i++) {
-  //     $('#insuranceOptions').append(`<option value="&insurance_uid=${body.data[i].name}">${body.data[i].name}</option>`);
-  //   }
-  // }, function(error) {
-  //   $('#errors').text(`There was an error processing your request: ${error.message}`);
-  // });
+  let promiseSpecialtyList = doctorService.getAllSpecialties();
+  let promiseInsuranceList = doctorService.getAllInsurances();
+
+  promiseSpecialtyList.then(function(response) {
+    let body = JSON.parse(response);
+    for (var i = 0; i < body.data.length; i++) {
+      $('#specialtyOptions').append(`<option value="&specialty_uid=${body.data[i].name}">${body.data[i].name}</option>`);
+    }
+  }, function(error) {
+    $('#errors').text(`There was an error processing your request: ${error.message}`);
+  });
+
+  promiseInsuranceList.then(function(response) {
+    let body = JSON.parse(response);
+    for (var i = 0; i < body.data.length; i++) {
+      $('#insuranceOptions').append(`<option value="&insurance_uid=${body.data[i].name}">${body.data[i].name}</option>`);
+    }
+  }, function(error) {
+    $('#errors').text(`There was an error processing your request: ${error.message}`);
+  });
 
 
 
