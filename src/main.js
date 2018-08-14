@@ -12,7 +12,7 @@ $(document).ready(function() {
   promiseSpecialtyList.then(function(response) {
     let body = JSON.parse(response);
     for (var i = 0; i < body.data.length; i++) {
-      $('#specialtyOptions').append(`<option value="&specialty_uid=${body.data[i].name}">${body.data[i].name}</option>`);
+      $('#specialties').append(`<option value="&specialty_uid=${body.data[i].uid}">${body.data[i].name}</option>`);
     }
   }, function(error) {
     $('#errors').text(`There was an error processing your request: ${error.message}`);
@@ -21,7 +21,7 @@ $(document).ready(function() {
   promiseInsuranceList.then(function(response) {
     let body = JSON.parse(response);
     for (var i = 0; i < body.data.length; i++) {
-      $('#insuranceOptions').append(`<option value="&insurance_uid=${body.data[i].name}">${body.data[i].name}</option>`);
+      $('#insurances').append(`<option value="&insurance_uid=${body.data[i].uid}">${body.data[i].name}</option>`);
     }
   }, function(error) {
     $('#errors').text(`There was an error processing your request: ${error.message}`);
