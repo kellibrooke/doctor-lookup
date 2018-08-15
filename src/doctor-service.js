@@ -1,6 +1,5 @@
 export class DoctorService {
   getAllDoctors(location, specialty, gender) {
-    console.log(location);
     return new Promise(function(resolve, reject) {
       let request = new XMLHttpRequest();
       let url =
