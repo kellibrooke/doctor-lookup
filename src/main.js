@@ -7,49 +7,58 @@ import { DoctorService } from './doctor-service.js';
 $(document).ready(function() {
   let doctorService = new DoctorService();
   let promiseSpecialtyList = doctorService.getAllSpecialties();
-  let promiseInsuranceList = doctorService.getAllInsurances();
+  // let promiseInsuranceList = doctorService.getAllInsurances();
 
   promiseSpecialtyList.then(function(response) {
     let body = JSON.parse(response);
     for (var i = 0; i < body.data.length; i++) {
-      $('#specialties').append(`<option value="&specialty_uid=${body.data[i].uid}">${body.data[i].name}</option>`);
+      $('#specialties').append(`<option value="specialty_uid=${body.data[i].uid}">${body.data[i].name}</option>`);
     }
   }, function(error) {
     $('#errors').text(`There was an error processing your request: ${error.message}`);
   });
 
-  promiseInsuranceList.then(function(response) {
-    let body = JSON.parse(response);
-    for (var i = 0; i < body.data.length; i++) {
-      $('#insurances').append(`<option value="&insurance_uid=${body.data[i].uid}">${body.data[i].name}</option>`);
-    }
-  }, function(error) {
-    $('#errors').text(`There was an error processing your request: ${error.message}`);
-  });
+  // promiseInsuranceList.then(function(response) {
+  //   let body = JSON.parse(response);
+  //   for (var i = 0; i < body.data.length; i++) {
+  //     $('#insurances').append(`<option value="&insurance_uid=${body.data[i].uid}">${body.data[i].name}</option>`);
+  //   }
+  // }, function(error) {
+  //   $('#errors').text(`There was an error processing your request: ${error.message}`);
+  // });
 
 
 
   $('#findDrBySpecialty').click(function() {
+    $("#showDrInfo").text("");
     let city = ($('#city').val()).toLowerCase();
     let state = $('#state').val();
-    let location = `location=${state}-${city}`;
-    let insurance = $('#insurances').val();
+    let location = `&location=${state}-${city}`;
+    // let insurance = $('#insurances').val();
     let specialty = $('#specialties').val();
     let gender = $('#gender').val();
-    let promiseDoctorList = doctorService.getAllDoctors(location, insurance, specialty);
+    let promiseDoctorList = doctorService.getAllDoctors(location, specialty, gender);
 
     promiseDoctorList.then(function(response) {
       let body = JSON.parse(response);
-
-      for (var i = 0; i < body.data.length; i++) {
-        let acceptsPatients = "";
-        if (body.data[i].practices.accepts_new_patients == true) {
-          acceptsPatients = "yes";
-        } else {
-          acceptsPatients = "no";
+      console.log(body.meta.count);
+        if (body.meta.count != 0) {
+        console.log(body.data[0].practices[0].visit_address.city);
+        for (var i = 0; i < body.data.length; i++) {
+          let acceptsPatients = "";
+          if (body.data[i].practices.accepts_new_patients == true) {
+            acceptsPatients = "yes";
+          } else {
+            acceptsPatients = "no";
+          }
+          for(var j=0; j < body.data[i].practices.length; j++) {
+            if (body.data[i].practices[j].visit_address.city == "Portland") {
+              $('#showDrInfo').append(`<h3>${body.data[i].profile.first_name} ${body.data[i].profile.last_name}</h3> <p>Accepts New Patients: ${acceptsPatients}</p>
+              <p>Office Address: ${body.data[i].practices[j].visit_address.street}, ${body.data[i].practices[j].visit_address.city}, ${body.data[i].practices[j].visit_address.state}`);
+            }
+          }
         }
-        $('#showDrInfo').append(`<h3>${body.data[i].profile.first_name} ${body.data[i].profile.last_name}</h3><p>Office Address:<br>${body.data[i].practices.visit_address.street}<br>${body.data[i].practices.visit_address.street2}<br> ${body.data[i].practices.visit_address.city},  ${body.data[i].practices.visit_address.state}  ${body.data[i].practices.visit_address.zip}</p><p>Office Phone Number: ${body.data[i].practices.phones.number}</p><p><a href='${body.data[i].practices.website}'>Office Website</a></p><p>Accepting New Patients: ${acceptsPatients}</p>`);
-      }
+    }
     }, function(error) {
       $('#errors').text(`There was an error processing your request: ${error.message}`);
     });

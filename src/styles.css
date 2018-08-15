@@ -2,3 +2,7 @@ body {
   background-color: #013220;
   color: #ffffff;
 }
+
+#showDrInfo {
+  margin-top: 50px;
+}
