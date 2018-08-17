@@ -7,7 +7,18 @@ import { DoctorService } from './doctor-service.js';
 $(document).ready(function() {
   let doctorService = new DoctorService();
   let promiseSpecialtyList = doctorService.getAllSpecialties();
-  // let promiseInsuranceList = doctorService.getAllInsurances();
+  setTimeout(function(){
+    let promiseInsuranceList = doctorService.getAllInsurances();
+
+      promiseInsuranceList.then(function(response) {
+        let body = JSON.parse(response);
+        for (var i = 0; i < body.data.length; i++) {
+          $('#insurances').append(`<option value="&insurance_uid=${body.data[i].uid}">${body.data[i].name}</option>`);
+        }
+      }, function(error) {
+        $('#errors').text(`There was an error processing your request: ${error.message}`);
+      });}, 1000);
+  //  = doctorService.getAllInsurances();
 
   promiseSpecialtyList.then(function(response) {
     let body = JSON.parse(response);
@@ -18,23 +29,16 @@ $(document).ready(function() {
     $('#errors').text(`There was an error processing your request: ${error.message}`);
   });
 
-  // promiseInsuranceList.then(function(response) {
-  //   let body = JSON.parse(response);
-  //   for (var i = 0; i < body.data.length; i++) {
-  //     $('#insurances').append(`<option value="&insurance_uid=${body.data[i].uid}">${body.data[i].name}</option>`);
-  //   }
-  // }, function(error) {
-  //   $('#errors').text(`There was an error processing your request: ${error.message}`);
-  // });
 
 
 
   $('#findDrBySpecialty').click(function() {
+    console.log("made it");
     $("#showDrInfo").text("");
     let city = ($('#city').val()).toLowerCase();
     let state = $('#state').val();
     let location = `&location=${state}-${city}`;
-    // let insurance = $('#insurances').val();
+    let insurance = $('#insurances').val();
     let specialty = $('#specialties').val();
     let gender = $('#gender').val();
     let promiseDoctorList = doctorService.getAllDoctors(location, specialty, gender);
@@ -55,7 +59,6 @@ $(document).ready(function() {
               let phone2 = body.data[i].practices[j].phones[0].number.slice(3,6);
               let phone3 = body.data[i].practices[j].phones[0].number.slice(6,10);
               let phoneNumber = `${phone1}-${phone2}-${phone3}`;
-              console.log(phoneNumber);
               $('#showDrInfo').append(`<h3>${body.data[i].profile.first_name} ${body.data[i].profile.last_name}</h3> <p>Accepts New Patients: ${acceptsPatients}</p>
               <p>Office Address: ${body.data[i].practices[j].visit_address.street}, ${body.data[i].practices[j].visit_address.city}, ${body.data[i].practices[j].visit_address.state}</p><p>Phone Number: ${phoneNumber}</p>`);
             }
