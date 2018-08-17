@@ -35,6 +35,7 @@ $(document).ready(function() {
   $('#findDrBySpecialty').click(function() {
     console.log("made it");
     $("#showDrInfo").text("");
+    let name = $('#name').val();
     let city = ($('#city').val()).toLowerCase();
     let state = $('#state').val();
     let location = `&location=${state}-${city}`;
@@ -60,7 +61,7 @@ $(document).ready(function() {
               let phone3 = body.data[i].practices[j].phones[0].number.slice(6,10);
               let phoneNumber = `${phone1}-${phone2}-${phone3}`;
               $('#showDrInfo').append(`<h3>${body.data[i].profile.first_name} ${body.data[i].profile.last_name}</h3> <p>Accepts New Patients: ${acceptsPatients}</p>
-              <p>Office Address: ${body.data[i].practices[j].visit_address.street}, ${body.data[i].practices[j].visit_address.city}, ${body.data[i].practices[j].visit_address.state}</p><p>Phone Number: ${phoneNumber}</p>`);
+              <p>Office Address: ${body.data[i].practices[j].visit_address.street}, ${body.data[i].practices[j].visit_address.city}, ${body.data[i].practices[j].visit_address.state}</p><p>Phone Number: ${phoneNumber}</p><p>Website: <a href="${body.data[i].practices[0].website}"`);
             }
           }
         }
